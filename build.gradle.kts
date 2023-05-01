@@ -84,15 +84,15 @@ publishing {
       artifact(javadocJar.get())
 
       pom {
-        name.set("NAME")    // FIXME change name
-        description.set("DESCRIPTION") //FIXME change description
-        url.set("https://www.github.com/LeoColman/repo") // FIXME change URL
+        name.set("kotest-extensions-h2")
+        description.set("Integration for H2 Database with Kotest")
+        url.set("https://www.github.com/LeoColman/kotest-extensions-h2")
 
 
         scm {
-          connection.set("scm:git:http://www.github.com/LeoColman/repo") // FIXME change URL
-          developerConnection.set("scm:git:http://github.com/LeoColman/repo") // FIXME change URL
-          url.set("https://www.github.com/LeoColman/repo") // FIXME change URL
+          connection.set("scm:git:http://www.github.com/LeoColman/kotest-extensions-h2")
+          developerConnection.set("scm:git:http://github.com/LeoColman/kotest-extensions-h2")
+          url.set("https://www.github.com/LeoColman/kotest-extensions-h2")
         }
 
         licenses {
