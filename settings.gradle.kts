@@ -21,4 +21,4 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "colman-oss-template" // FIXME change root project name
+rootProject.name = "kotest-extensions-h2"

@@ -29,7 +29,11 @@ group = "br.com.colman"
 version = getenv("RELEASE_VERSION") ?: "local"
 
 dependencies {
+  // H2
+  api(libs.h2)
+
   // Kotest
+  api(libs.kotest.framework.api)
   testImplementation(libs.bundles.kotest)
 }
 

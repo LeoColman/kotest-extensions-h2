@@ -1,11 +1,14 @@
 [versions]
-kotlin = "1.8.21"
+kotlin = "1.8.10"
 kotest = "5.6.1"
-detekt = "1.19"
+detekt = "1.23.0-RC3"
+h2 = "2.1.214"
 
 [libraries]
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+kotest-framework-api = { module = "io.kotest:kotest-framework-api", version.ref = "kotest" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
 
 [bundles]
 kotest = ["kotest-runner-junit5", "kotest-property"]
