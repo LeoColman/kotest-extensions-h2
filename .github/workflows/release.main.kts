@@ -23,9 +23,9 @@ workflow(
   sourceFile = __FILE__.toPath(),
   env = linkedMapOf(
     "OSSRH_USERNAME" to expr { OSSRH_USERNAME },
-      "OSSRH_PASSWORD" to expr { OSSRH_PASSWORD },
-      "ORG_GRADLE_PROJECT_signingKey" to expr { ORG_GRADLE_PROJECT_signingKey },
-      "ORG_GRADLE_PROJECT_signingPassword" to expr { ORG_GRADLE_PROJECT_signingPassword },
+    "OSSRH_PASSWORD" to expr { OSSRH_PASSWORD },
+    "ORG_GRADLE_PROJECT_signingKey" to expr { ORG_GRADLE_PROJECT_signingKey },
+    "ORG_GRADLE_PROJECT_signingPassword" to expr { ORG_GRADLE_PROJECT_signingPassword },
   )
 ) {
   job("build", runsOn = RunnerType.UbuntuLatest) {
