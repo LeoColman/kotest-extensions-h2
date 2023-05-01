@@ -31,7 +31,7 @@ workflow(
     "OSSRH_PASSWORD" to expr { OSSRH_PASSWORD },
     "ORG_GRADLE_PROJECT_signingKey" to expr { ORG_GRADLE_PROJECT_signingKey },
     "ORG_GRADLE_PROJECT_signingPassword" to expr { ORG_GRADLE_PROJECT_signingPassword },
-    "RELEASE_VERSION" to expr { github["event.inputs.version"]!! }
+    "RELEASE_VERSION" to expr { github["event.inputs.RELEASE_VERSION"]!! }
   )
 ) {
   job("build", runsOn = RunnerType.UbuntuLatest) {
