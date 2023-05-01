@@ -4,13 +4,18 @@
 
 name: Publish
 on:
-  push: {}
-  pull_request: {}
+  workflow_dispatch:
+    inputs:
+      RELEASE_VERSION:
+        description: The release version
+        type: string
+        required: true
 env:
   OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
   OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_signingKey }}
   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_signingPassword }}
+  RELEASE_VERSION: ${{ github.event.inputs.version }}
 jobs:
   check_yaml_consistency:
     name: Check YAML consistency

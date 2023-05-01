@@ -5,8 +5,9 @@ import it.krzeminski.githubactions.actions.actions.CheckoutV3
 import it.krzeminski.githubactions.actions.actions.SetupJavaV3
 import it.krzeminski.githubactions.actions.gradle.GradleBuildActionV2
 import it.krzeminski.githubactions.domain.RunnerType
-import it.krzeminski.githubactions.domain.triggers.PullRequest
-import it.krzeminski.githubactions.domain.triggers.Push
+import it.krzeminski.githubactions.domain.triggers.WorkflowDispatch
+import it.krzeminski.githubactions.domain.triggers.WorkflowDispatch.Input
+import it.krzeminski.githubactions.domain.triggers.WorkflowDispatch.Type.String
 import it.krzeminski.githubactions.dsl.expressions.Contexts
 import it.krzeminski.githubactions.dsl.expressions.expr
 import it.krzeminski.githubactions.dsl.workflow
@@ -19,13 +20,18 @@ val ORG_GRADLE_PROJECT_signingPassword by Contexts.secrets
 
 workflow(
   name = "Publish",
-  on = listOf(Push(), PullRequest()),
+  on = listOf(
+    WorkflowDispatch(
+      mapOf("RELEASE_VERSION" to Input("The release version", true, String))
+    )
+  ),
   sourceFile = __FILE__.toPath(),
   env = linkedMapOf(
     "OSSRH_USERNAME" to expr { OSSRH_USERNAME },
     "OSSRH_PASSWORD" to expr { OSSRH_PASSWORD },
     "ORG_GRADLE_PROJECT_signingKey" to expr { ORG_GRADLE_PROJECT_signingKey },
     "ORG_GRADLE_PROJECT_signingPassword" to expr { ORG_GRADLE_PROJECT_signingPassword },
+    "RELEASE_VERSION" to expr { github["event.inputs.version"]!! }
   )
 ) {
   job("build", runsOn = RunnerType.UbuntuLatest) {
