@@ -1,0 +1,15 @@
+[versions]
+kotlin = "1.8.21"
+kotest = "5.6.1"
+detekt = "1.19"
+
+[libraries]
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+
+[bundles]
+kotest = ["kotest-runner-junit5", "kotest-property"]
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
