@@ -2,7 +2,7 @@
 kotlin = "1.8.10"
 kotest = "5.7.2"
 detekt = "1.23.1"
-h2 = "2.2.222"
+h2 = "2.2.224"
 
 [libraries]
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
