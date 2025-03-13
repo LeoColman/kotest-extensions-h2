@@ -16,10 +16,10 @@ Add the extension to a test where you're using H2
 ```kotlin
 
 class MyTest : FunSpec({
-  val listener = listener(H2Extension())
+  val extension = extension(H2Extension())
   
   test("My h2 test") {
-    val dataSource = listener.dataSource
+    val dataSource = extension.dataSource
     // ...
   }
 })
