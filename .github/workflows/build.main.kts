@@ -1,30 +1,31 @@
 #!/usr/bin/env kotlin
-@file:DependsOn("it.krzeminski:github-actions-kotlin-dsl:0.40.0")
+@file:Repository("https://repo1.maven.org/maven2/")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.2.0")
 
-import it.krzeminski.githubactions.actions.actions.CheckoutV3
-import it.krzeminski.githubactions.actions.actions.SetupJavaV3
-import it.krzeminski.githubactions.actions.gradle.GradleBuildActionV2
-import it.krzeminski.githubactions.domain.RunnerType
-import it.krzeminski.githubactions.domain.triggers.PullRequest
-import it.krzeminski.githubactions.domain.triggers.Push
-import it.krzeminski.githubactions.dsl.expressions.Contexts
-import it.krzeminski.githubactions.dsl.workflow
-import it.krzeminski.githubactions.yaml.writeToFile
+@file:Repository("https://bindings.krzeminski.it")
+@file:DependsOn("actions:checkout:v4")
+@file:DependsOn("actions:setup-java:v4")
+@file:DependsOn("gradle:actions__setup-gradle:v4")
 
-val GPG_KEY by Contexts.secrets
+
+import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
+import io.github.typesafegithub.workflows.domain.RunnerType
+import io.github.typesafegithub.workflows.domain.triggers.PullRequest
+import io.github.typesafegithub.workflows.domain.triggers.Push
+import io.github.typesafegithub.workflows.dsl.workflow
+
 
 workflow(
   name = "Build",
   on = listOf(Push(), PullRequest()),
-  sourceFile = __FILE__.toPath()
+  sourceFile = __FILE__
 ) {
-  job("build", runsOn = RunnerType.UbuntuLatest) {
-    uses(name = "Set up JDK", SetupJavaV3(javaVersion = "17", distribution = SetupJavaV3.Distribution.Adopt))
-    uses(CheckoutV3())
-    uses(
-      "Run build", GradleBuildActionV2(
-        arguments = "build"
-      )
-    )
+  job(id = "build", runsOn = RunnerType.UbuntuLatest) {
+    uses(name = "Setup JDK", action = SetupJava(javaVersion = "22", distribution = SetupJava.Distribution.Adopt))
+    uses(name = "Checkout", action = Checkout())
+    uses(name = "Setup Gradle", action = ActionsSetupGradle())
+    run(name = "Run Build", command = "./gradlew build")
   }
-}.writeToFile()
+}

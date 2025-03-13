@@ -6,9 +6,12 @@ import io.kotest.core.test.TestResult
 import org.h2.jdbcx.JdbcDataSource
 import javax.sql.DataSource
 
-public class H2Listener(private val url: String = "jdbc:h2:mem:") : TestListener {
+@Deprecated("Use H2Extension instead", ReplaceWith("H2Extension()"))
+public typealias H2Listener = H2Extension
 
-  public val dataSource: DataSource = JdbcDataSource().apply { setUrl(url) }
+public class H2Extension(private val url: String = "jdbc:h2:mem:") : TestListener {
+
+  public val dataSource: DataSource = JdbcDataSource().also { it.setUrl(url) }
 
   init {
     Class.forName("org.h2.Driver")  // Load H2 driver

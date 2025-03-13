@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+import com.vanniktech.maven.publish.SonatypeHost
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.lang.System.getenv
 
 plugins {
-  kotlin("jvm") version libs.versions.kotlin.get()
-  id("org.jetbrains.dokka") version libs.versions.kotlin.get()
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.dokka)
   alias(libs.plugins.detekt)
-  `maven-publish`
-  signing
+  alias(libs.plugins.maven.publish)
 }
 
 group = "br.com.colman"
@@ -41,88 +42,45 @@ detekt {
   buildUponDefaultConfig = true
 }
 
-tasks.withType<KotlinCompile> {
-  kotlinOptions.jvmTarget = "1.8"
+kotlin {
+  explicitApi()
+  compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
+  jvmToolchain(11)
 }
 
 tasks.withType<Test> {
   useJUnitPlatform()
 }
 
-kotlin {
-  explicitApi()
-  jvmToolchain(8)
-}
+mavenPublishing {
+  publishToMavenCentral(SonatypeHost.DEFAULT, automaticRelease = true)
+  signAllPublications()
 
-val sourcesJar by tasks.registering(Jar::class) {
-  archiveClassifier.set("sources")
-  from(sourceSets.getByName("main").allSource)
-}
-
-val javadocJar by tasks.registering(Jar::class) {
-  dependsOn("dokkaHtml")
-  archiveClassifier.set("javadoc")
-  from("$buildDir/dokka")
-}
+  pom {
+    name.set("kotest-extensions-h2")
+    description.set("Integration for H2 Database with Kotest")
+    url.set("https://www.github.com/LeoColman/kotest-extensions-h2")
 
 
-publishing {
-  repositories {
+    scm {
+      connection.set("scm:git:http://www.github.com/LeoColman/kotest-extensions-h2")
+      developerConnection.set("scm:git:http://github.com/LeoColman/kotest-extensions-h2")
+      url.set("https://www.github.com/LeoColman/kotest-extensions-h2")
+    }
 
-    maven("https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-      credentials {
-        username = getenv("OSSRH_USERNAME")
-        password = getenv("OSSRH_PASSWORD")
+    licenses {
+      license {
+        name.set("The Apache 2.0 License")
+        url.set("https://opensource.org/licenses/Apache-2.0")
+      }
+    }
+
+    developers {
+      developer {
+        id.set("LeoColman")
+        name.set("Leonardo Colman Lopes")
+        email.set("dev@leonardo.colman.com.br")
       }
     }
   }
-
-  publications {
-
-    register("mavenJava", MavenPublication::class) {
-      from(components["java"])
-      artifact(sourcesJar.get())
-      artifact(javadocJar.get())
-
-      pom {
-        name.set("kotest-extensions-h2")
-        description.set("Integration for H2 Database with Kotest")
-        url.set("https://www.github.com/LeoColman/kotest-extensions-h2")
-
-
-        scm {
-          connection.set("scm:git:http://www.github.com/LeoColman/kotest-extensions-h2")
-          developerConnection.set("scm:git:http://github.com/LeoColman/kotest-extensions-h2")
-          url.set("https://www.github.com/LeoColman/kotest-extensions-h2")
-        }
-
-        licenses {
-          license {
-            name.set("The Apache 2.0 License")
-            url.set("https://opensource.org/licenses/Apache-2.0")
-          }
-        }
-
-        developers {
-          developer {
-            id.set("LeoColman")
-            name.set("Leonardo Colman Lopes")
-            email.set("dev@leonardo.colman.com.br")
-          }
-        }
-      }
-    }
-  }
-}
-
-val signingKey: String? by project
-val signingPassword: String? by project
-
-signing {
-  useGpgCmd()
-  if (signingKey != null && signingPassword != null) {
-    useInMemoryPgpKeys(signingKey, signingPassword)
-  }
-
-  sign(publishing.publications["mavenJava"])
 }

@@ -1,6 +1,7 @@
 [versions]
-kotlin = "1.8.10"
-kotest = "5.9.1"
+kotlin = "2.1.10"
+dokka = "2.0.0"
+kotest = "6.0.0.M1"
 detekt = "1.23.8"
 h2 = "2.2.224"
 
@@ -14,5 +15,7 @@ h2 = { module = "com.h2database:h2", version.ref = "h2" }
 kotest = ["kotest-runner-junit5", "kotest-property"]
 
 [plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka"}
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.30.0" }

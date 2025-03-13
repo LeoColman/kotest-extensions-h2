@@ -1,46 +1,48 @@
 #!/usr/bin/env kotlin
-@file:DependsOn("it.krzeminski:github-actions-kotlin-dsl:0.40.0")
+@file:Repository("https://repo1.maven.org/maven2/")
+@file:DependsOn("io.github.typesafegithub:github-workflows-kt:3.2.0")
 
-import it.krzeminski.githubactions.actions.actions.CheckoutV3
-import it.krzeminski.githubactions.actions.actions.SetupJavaV3
-import it.krzeminski.githubactions.actions.gradle.GradleBuildActionV2
-import it.krzeminski.githubactions.domain.RunnerType
-import it.krzeminski.githubactions.domain.triggers.WorkflowDispatch
-import it.krzeminski.githubactions.domain.triggers.WorkflowDispatch.Input
-import it.krzeminski.githubactions.domain.triggers.WorkflowDispatch.Type.String
-import it.krzeminski.githubactions.dsl.expressions.Contexts
-import it.krzeminski.githubactions.dsl.expressions.expr
-import it.krzeminski.githubactions.dsl.workflow
-import it.krzeminski.githubactions.yaml.writeToFile
+@file:Repository("https://bindings.krzeminski.it")
+@file:DependsOn("actions:checkout:v4")
+@file:DependsOn("actions:setup-java:v4")
+@file:DependsOn("gradle:actions__setup-gradle:v4")
+
+import io.github.typesafegithub.workflows.actions.actions.Checkout
+import io.github.typesafegithub.workflows.actions.actions.SetupJava
+import io.github.typesafegithub.workflows.actions.gradle.ActionsSetupGradle
+import io.github.typesafegithub.workflows.domain.RunnerType
+import io.github.typesafegithub.workflows.domain.triggers.Push
+import io.github.typesafegithub.workflows.dsl.expressions.Contexts
+import io.github.typesafegithub.workflows.dsl.expressions.expr
+import io.github.typesafegithub.workflows.dsl.workflow
 
 val OSSRH_USERNAME by Contexts.secrets
 val OSSRH_PASSWORD by Contexts.secrets
-val ORG_GRADLE_PROJECT_signingKey by Contexts.secrets
-val ORG_GRADLE_PROJECT_signingPassword by Contexts.secrets
+val ORG_GRADLE_PROJECT_SIGNINGKEY by Contexts.secrets
+val ORG_GRADLE_PROJECT_SIGNINGPASSWORD by Contexts.secrets
+val REF_NAME by Contexts.github
+
 
 workflow(
-  name = "Publish",
-  on = listOf(
-    WorkflowDispatch(
-      mapOf("RELEASE_VERSION" to Input("The release version", true, String))
-    )
-  ),
-  sourceFile = __FILE__.toPath(),
-  env = linkedMapOf(
-    "OSSRH_USERNAME" to expr { OSSRH_USERNAME },
-    "OSSRH_PASSWORD" to expr { OSSRH_PASSWORD },
-    "ORG_GRADLE_PROJECT_signingKey" to expr { ORG_GRADLE_PROJECT_signingKey },
-    "ORG_GRADLE_PROJECT_signingPassword" to expr { ORG_GRADLE_PROJECT_signingPassword },
-    "RELEASE_VERSION" to expr { github["event.inputs.RELEASE_VERSION"]!! }
-  )
+  name = "Release",
+  on = listOf(Push(tags = listOf("*"))),
+  sourceFile = __FILE__
 ) {
-  job("build", runsOn = RunnerType.UbuntuLatest) {
-    uses(name = "Set up JDK", SetupJavaV3(javaVersion = "17", distribution = SetupJavaV3.Distribution.Adopt))
-    uses(CheckoutV3())
-    uses(
-      "Run publish", GradleBuildActionV2(
-        arguments = "publish"
+  job(id = "release", runsOn = RunnerType.MacOSLatest) {
+    uses(name = "Setup JDK", action = SetupJava(javaVersion = "22", distribution = SetupJava.Distribution.Adopt))
+    uses(name = "Checkout", action = Checkout())
+    uses(name = "Setup Gradle", action = ActionsSetupGradle())
+
+    run(
+      name = "Publish to Maven Central",
+      command = "./gradlew publish",
+      env = linkedMapOf(
+        "RELEASE_VERSION" to expr { REF_NAME },
+        "ORG_GRADLE_PROJECT_mavenCentralUsername" to expr { OSSRH_USERNAME },
+        "ORG_GRADLE_PROJECT_mavenCentralPassword" to expr { OSSRH_PASSWORD },
+        "ORG_GRADLE_PROJECT_signingInMemoryKey" to expr { ORG_GRADLE_PROJECT_SIGNINGKEY },
+        "ORG_GRADLE_PROJECT_signingInMemoryKeyPassword" to expr { ORG_GRADLE_PROJECT_SIGNINGPASSWORD }
       )
     )
   }
-}.writeToFile()
+}
