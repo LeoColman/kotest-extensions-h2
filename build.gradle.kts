@@ -16,7 +16,6 @@
 
 import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.lang.System.getenv
 
 plugins {
@@ -34,7 +33,7 @@ dependencies {
   api(libs.h2)
 
   // Kotest
-  api(libs.kotest.framework.api)
+  api(libs.kotest.framework.engine)
   testImplementation(libs.bundles.kotest)
 }
 
