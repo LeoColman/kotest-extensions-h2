@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.1.20"
 dokka = "2.0.0"
-kotest = "6.0.0.M3"
+kotest = "6.0.0.M4"
 detekt = "1.23.8"
 h2 = "2.3.232"
 
