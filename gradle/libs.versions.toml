@@ -18,4 +18,4 @@ kotest = ["kotest-runner-junit5", "kotest-property"]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka"}
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.33.0" }
+maven-publish = { id = "com.vanniktech.maven.publish", version = "0.34.0" }
