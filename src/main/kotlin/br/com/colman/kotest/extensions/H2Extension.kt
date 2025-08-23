@@ -2,7 +2,7 @@ package br.com.colman.kotest.extensions
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import org.h2.jdbcx.JdbcDataSource
 import javax.sql.DataSource
 
