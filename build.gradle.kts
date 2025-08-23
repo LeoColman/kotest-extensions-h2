@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.lang.System.getenv
 
@@ -52,7 +51,7 @@ tasks.withType<Test> {
 }
 
 mavenPublishing {
-  publishToMavenCentral(SonatypeHost.DEFAULT, automaticRelease = true)
+  publishToMavenCentral(true)
   signAllPublications()
 
   pom {
